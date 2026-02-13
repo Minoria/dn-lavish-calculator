@@ -30,4 +30,118 @@
             border-right: 1px solid #333;
         }
         .calc-content { width: 60%; padding: 40px; }
-        h2 { margin-top: 0
+        h2 { margin-top: 0; color: #00d4ff; border-bottom: 1px solid #333; pb: 10px; }
+        .input-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-size: 0.85em; color: #999; }
+        input { 
+            width: 100%; padding: 12px; background: #2a2a2a; border: 1px solid #444; 
+            color: #00ff88; border-radius: 8px; box-sizing: border-box; font-size: 1.1em; font-weight: bold;
+        }
+        .tax-tag { color: #ff4d4d; font-size: 0.8em; font-weight: bold; margin-top: 5px; }
+        .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin: 20px 0; }
+        .stat-card { background: #252525; padding: 15px; border-radius: 10px; border: 1px solid #333; }
+        .stat-card small { color: #888; font-size: 0.75em; display: block; margin-bottom: 5px; }
+        .stat-card div { font-size: 1.2em; font-weight: bold; }
+        .verdict { 
+            padding: 20px; border-radius: 10px; text-align: center; 
+            font-weight: bold; font-size: 1.1em; margin-bottom: 10px;
+        }
+        .profit { background: rgba(0, 255, 136, 0.1); border: 1px solid #00ff88; color: #00ff88; }
+        .loss { background: rgba(255, 77, 77, 0.1); border: 1px solid #ff4d4d; color: #ff4d4d; }
+        .footer-info { font-size: 0.75em; color: #555; line-height: 1.5; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="side-image"></div>
+
+    <div class="calc-content">
+        <h2>DN Profit Comparison</h2>
+        
+        <div class="input-group">
+            <label>Gold Rate (IDR per 1,000g)</label>
+            <input type="number" id="idrRate" value="113" oninput="update()">
+        </div>
+
+        <div class="input-group">
+            <label>Lavish Market Price (Gold)</label>
+            <input type="number" id="lavishPrice" value="65000" oninput="update()">
+            <div class="tax-tag">TAX INCLUDED 10% ON TH</div>
+        </div>
+
+        <div id="verdictBox" class="verdict">Analyzing...</div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <small>MYR PROFIT/LOSS</small>
+                <div id="myrDiff">RM 0.00</div>
+            </div>
+            <div class="stat-card">
+                <small>SGD PROFIT/LOSS</small>
+                <div id="sgdDiff">S$ 0.00</div>
+            </div>
+        </div>
+
+        <div class="footer-info">
+            * 100k CC = RM 303.72 (Screenshot Price)<br>
+            * Lavish (5,900 CC) ≈ RM 17.92 cost.<br>
+            * Rates: 1 MYR = 4,325 IDR | 1 MYR = 0.32 SGD
+        </div>
+    </div>
+</div>
+
+<script>
+function update() {
+    // Rates & Constants
+    const MYR_TO_IDR = 4325;
+    const MYR_TO_SGD = 0.32;
+    const CC_100K_RM = 303.72; 
+    const LAVISH_CC = 5900;
+    const TAX = 0.90; // 10% tax deducted
+
+    // Inputs
+    const idrRate = parseFloat(document.getElementById('idrRate').value) || 0;
+    const listedPrice = parseFloat(document.getElementById('lavishPrice').value) || 0;
+
+    // 1. Calculations - Lavish Side
+    const goldReceived = listedPrice * TAX;
+    const lavishCostMYR = (LAVISH_CC / 100000) * CC_100K_RM;
+    
+    // 2. Calculations - Seller Side
+    // How much that same amount of gold would cost if bought from a seller
+    const myrPer1k = idrRate / (MYR_TO_IDR / 1000);
+    const sellerCostForSameGold = (goldReceived / 1000) * myrPer1k;
+
+    // 3. Profit/Loss (Seller Cost - Lavish Cost)
+    // If Seller Cost is RM 20 and Lavish Cost is RM 17, profit is RM 3.
+    const profitMYR = sellerCostForSameGold - lavishCostMYR;
+    const profitSGD = profitMYR * MYR_TO_SGD;
+
+    // UI Updates
+    const vBox = document.getElementById('verdictBox');
+    const myrDisplay = document.getElementById('myrDiff');
+    const sgdDisplay = document.getElementById('sgdDiff');
+
+    if (profitMYR > 0) {
+        vBox.className = "verdict profit";
+        vBox.innerHTML = "RESULT: SELL LAVISH<br><small>Topping up is cheaper than buying gold</small>";
+        myrDisplay.innerText = "+ RM " + profitMYR.toFixed(2);
+        sgdDisplay.innerText = "+ S$ " + profitSGD.toFixed(2);
+        myrDisplay.style.color = "#00ff88";
+        sgdDisplay.style.color = "#00ff88";
+    } else {
+        vBox.className = "verdict loss";
+        vBox.innerHTML = "RESULT: BUY FROM SELLER<br><small>Direct gold purchase is better value</small>";
+        myrDisplay.innerText = "- RM " + Math.abs(profitMYR).toFixed(2);
+        sgdDisplay.innerText = "- S$ " + Math.abs(profitSGD).toFixed(2);
+        myrDisplay.style.color = "#ff4d4d";
+        sgdDisplay.style.color = "#ff4d4d";
+    }
+}
+
+update();
+</script>
+
+</body>
+</html>
