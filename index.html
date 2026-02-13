@@ -2,37 +2,62 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>DN Profit Calc - Live vs Flat</title>
+    <title>DN Profit Calculator</title>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background: #121212; color: #e0e0e0; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .container { display: flex; background: #1e1e1e; border-radius: 20px; overflow: hidden; width: 950px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 1px solid #333; }
-        .side-image { width: 40%; background: #2a2a2a url('ireng.jpg') no-repeat center; background-size: cover; border-right: 1px solid #333; }
-        .calc-content { width: 60%; padding: 40px; }
-        h2 { margin-top: 0; color: #00d4ff; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .container { display: flex; background: #1e1e1e; border-radius: 20px; overflow: hidden; width: 950px; border: 2px solid #333; }
         
-        /* Toggle Styling */
-        .toggle-container { margin-bottom: 25px; display: flex; align-items: center; gap: 10px; background: #252525; padding: 10px; border-radius: 8px; }
-        .switch { position: relative; display: inline-block; width: 50px; height: 24px; }
-        .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #444; transition: .4s; border-radius: 24px; }
-        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
-        input:checked + .slider { background-color: #00d4ff; }
-        input:checked + .slider:before { transform: translateX(26px); }
+        /* SIDE IMAGE */
+        .side-image { 
+            width: 40%; 
+            background: #2a2a2a url('ireng.jpg') no-repeat center; 
+            background-size: cover; 
+            border-right: 2px solid #333;
+        }
 
+        .calc-content { width: 60%; padding: 40px; box-sizing: border-box; }
+        h2 { margin: 0 0 20px 0; color: #00d4ff; border-bottom: 1px solid #333; padding-bottom: 10px; }
+
+        /* THE TOGGLE - BIG AND VISIBLE */
+        .toggle-section { 
+            background: #252525; padding: 15px; border-radius: 12px; margin-bottom: 25px; 
+            border: 1px solid #444; display: flex; flex-direction: column; gap: 10px;
+        }
+        .toggle-row { display: flex; align-items: center; gap: 15px; }
+        .switch { position: relative; display: inline-block; width: 60px; height: 30px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { 
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; 
+            background-color: #555; transition: .4s; border-radius: 34px; border: 1px solid #777;
+        }
+        .slider:before { 
+            position: absolute; content: ""; height: 22px; width: 22px; left: 4px; bottom: 3px; 
+            background-color: white; transition: .4s; border-radius: 50%; 
+        }
+        input:checked + .slider { background-color: #00d4ff; }
+        input:checked + .slider:before { transform: translateX(30px); }
+        
+        #mode-status { font-weight: bold; font-size: 1.1em; color: #00d4ff; }
+
+        /* INPUTS */
         .input-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 8px; font-size: 0.85em; color: #999; }
-        input[type="number"] { width: 100%; padding: 12px; background: #2a2a2a; border: 1px solid #444; color: #00ff88; border-radius: 8px; box-sizing: border-box; font-size: 1.1em; font-weight: bold; }
+        input[type="number"] { 
+            width: 100%; padding: 15px; background: #2a2a2a; border: 1px solid #444; 
+            color: #00ff88; border-radius: 8px; font-size: 1.2em; font-weight: bold; box-sizing: border-box;
+        }
         
-        .tax-tag { color: #ff4d4d; font-size: 0.8em; font-weight: bold; margin-top: 5px; }
-        .verdict { padding: 20px; border-radius: 10px; text-align: center; font-weight: bold; font-size: 1.1em; margin-bottom: 15px; border: 1px solid transparent; }
+        .tax-tag { color: #ff4d4d; font-size: 0.9em; font-weight: bold; margin-top: 8px; }
+
+        /* RESULTS */
+        .verdict { padding: 20px; border-radius: 10px; text-align: center; font-weight: bold; font-size: 1.2em; margin-bottom: 20px; border-width: 2px; border-style: solid; }
         .profit { background: rgba(0, 255, 136, 0.1); border-color: #00ff88; color: #00ff88; }
         .loss { background: rgba(255, 77, 77, 0.1); border-color: #ff4d4d; color: #ff4d4d; }
 
-        .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px; }
-        .stat-card { background: #252525; padding: 15px; border-radius: 10px; border: 1px solid #333; }
-        .stat-card small { color: #888; font-size: 0.75em; display: block; margin-bottom: 5px; }
-        .stat-card div { font-size: 1.2em; font-weight: bold; }
-        #status-bar { font-size: 0.7em; margin-bottom: 10px; color: #888; }
+        .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .stat-card { background: #252525; padding: 15px; border-radius: 10px; border: 1px solid #333; text-align: center; }
+        .stat-card small { color: #888; font-size: 0.75em; display: block; margin-bottom: 5px; text-transform: uppercase; }
+        .stat-card div { font-size: 1.3em; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -42,18 +67,19 @@
     <div class="calc-content">
         <h2>DN Profit Comparison</h2>
         
-        <div class="toggle-container">
-            <label class="switch">
-                <input type="checkbox" id="modeToggle" onchange="update()">
-                <span class="slider"></span>
-            </label>
-            <span id="modeLabel">Mode: <b>Flat Exchange (113k = RM 26.12)</b></span>
+        <div class="toggle-section">
+            <div class="toggle-row">
+                <label class="switch">
+                    <input type="checkbox" id="modeToggle" onchange="update()">
+                    <span class="slider"></span>
+                </label>
+                <div id="mode-status">Flat Exchange Mode</div>
+            </div>
+            <div id="api-details" style="font-size: 0.75em; color: #777;">Using: 113k IDR = RM 26.12</div>
         </div>
 
-        <div id="status-bar">Syncing live rates...</div>
-        
         <div class="input-group">
-            <label>Gold Rate (IDR Rate per 1,000g — e.g., 113 = 113k)</label>
+            <label>Gold Rate (e.g. 113 for 113k/1000g)</label>
             <input type="number" id="idrInput" value="113" oninput="update()">
         </div>
 
@@ -67,99 +93,82 @@
 
         <div class="stats">
             <div class="stat-card">
-                <small>MYR PROFIT / LOSS</small>
+                <small>MYR Profit/Loss</small>
                 <div id="myrDiff">RM 0.00</div>
             </div>
             <div class="stat-card">
-                <small>SGD PROFIT / LOSS</small>
+                <small>SGD Profit/Loss</small>
                 <div id="sgdDiff">S$ 0.00</div>
             </div>
-        </div>
-
-        <div style="font-size: 0.75em; color: #666; line-height: 1.4;">
-            * Lavish Cost: 5,900 CC (~RM 17.92 based on 100k pack)<br>
-            * Exchange: 1 MYR ≈ 0.32 SGD
         </div>
     </div>
 </div>
 
 <script>
-let liveMyrToIdr = 4325;
-let liveMyrToSgd = 0.323;
+let liveIdr = 4325; // Fallback
+let liveSgd = 0.32;
 
-async function fetchLiveRates() {
+async function fetchRates() {
     try {
-        const response = await fetch('https://api.frankfurter.app/latest?from=MYR&to=IDR,SGD');
-        const data = await response.json();
-        liveMyrToIdr = data.rates.IDR;
-        liveMyrToSgd = data.rates.SGD;
-        document.getElementById('status-bar').innerText = `● API Connected: 1 MYR = ${liveMyrToIdr.toFixed(0)} IDR`;
-    } catch (e) {
-        document.getElementById('status-bar').innerText = "○ API Offline - Using backup rates";
-    }
-    update();
+        const res = await fetch('https://api.frankfurter.app/latest?from=MYR&to=IDR,SGD');
+        const data = await res.json();
+        liveIdr = data.rates.IDR;
+        liveSgd = data.rates.SGD;
+        update();
+    } catch(e) { console.log("API Fail"); update(); }
 }
 
 function update() {
-    const isApiMode = document.getElementById('modeToggle').checked;
-    const modeLabel = document.getElementById('modeLabel');
-    const statusText = document.getElementById('status-bar');
+    const isApi = document.getElementById('modeToggle').checked;
+    const modeStatus = document.getElementById('mode-status');
+    const apiDetails = document.getElementById('api-details');
     
-    // Constants
+    // Constants from your data
     const CC_100K_RM = 303.72; 
     const LAVISH_CC = 5900;
     const TAX = 0.90;
-    const MYR_TO_SGD = liveMyrToSgd; 
 
-    // Inputs
-    const idrInput = parseFloat(document.getElementById('idrInput').value) || 0;
-    const listedPrice = parseFloat(document.getElementById('lavishPrice').value) || 0;
+    const idrIn = parseFloat(document.getElementById('idrInput').value) || 0;
+    const marketGold = parseFloat(document.getElementById('lavishPrice').value) || 0;
 
-    // 1. Calculate Lavish Cost in MYR
+    // 1. Lavish Cost
     const lavishCostMYR = (LAVISH_CC / 100000) * CC_100K_RM;
-    const goldReceived = listedPrice * TAX;
+    const netGold = marketGold * TAX;
 
-    // 2. Calculate Seller Cost in MYR
+    // 2. Seller Cost
     let sellerCostMYR = 0;
-    
-    if (isApiMode) {
-        modeLabel.innerHTML = "Mode: <b>Exchange Rate API</b>";
-        statusText.style.display = "block";
-        // Convert input (113) to full IDR (113,000), then to MYR via live rate
-        const fullIdr = idrInput * 1000;
-        sellerCostMYR = (goldReceived / 1000) * (fullIdr / liveMyrToIdr);
+    if (isApi) {
+        modeStatus.innerText = "Live API Mode";
+        apiDetails.innerText = `Using Live Rate: 1 MYR = ${liveIdr.toFixed(0)} IDR`;
+        // Math: (Gold/1000) * (InputRate * 1000 / LiveRate)
+        sellerCostMYR = (netGold / 1000) * ((idrIn * 1000) / liveIdr);
     } else {
-        modeLabel.innerHTML = "Mode: <b>Flat Exchange (113k = RM 26.12)</b>";
-        statusText.style.display = "none";
-        // Using your math: 113 rate = 26.12 MYR per 1k gold
-        // We scale this based on your input rate (e.g. if you put 120, it scales 26.12)
-        const baseFlatMyrPer1k = 26.12;
-        const scaleFactor = idrInput / 113; 
-        sellerCostMYR = (goldReceived / 1000) * (baseFlatMyrPer1k * scaleFactor);
+        modeStatus.innerText = "Flat Exchange Mode";
+        apiDetails.innerText = "Using: 113 Rate = RM 26.12";
+        // Base flat cost: RM 26.12 for 1k gold at 113 rate
+        const myrPer1k = (idrIn / 113) * 26.12;
+        sellerCostMYR = (netGold / 1000) * myrPer1k;
     }
 
     const diffMYR = sellerCostMYR - lavishCostMYR;
-    const diffSGD = diffMYR * MYR_TO_SGD;
+    const diffSGD = diffMYR * liveSgd;
 
-    // UI Updates
+    // UI
     const vBox = document.getElementById('verdictBox');
-    const myrDisp = document.getElementById('myrDiff');
-    const sgdDisp = document.getElementById('sgdDiff');
-
     if (diffMYR > 0) {
         vBox.className = "verdict profit";
-        vBox.innerHTML = "RESULT: SELL LAVISH<br><small>Topping up is cheaper than buying gold</small>";
-        myrDisp.innerText = "+ RM " + diffMYR.toFixed(2);
-        sgdDisp.innerText = "+ S$ " + diffSGD.toFixed(2);
+        vBox.innerHTML = "SELL LAVISH";
+        document.getElementById('myrDiff').innerText = "+ RM " + diffMYR.toFixed(2);
+        document.getElementById('sgdDiff').innerText = "+ S$ " + diffSGD.toFixed(2);
     } else {
         vBox.className = "verdict loss";
-        vBox.innerHTML = "RESULT: BUY FROM SELLER<br><small>Buying gold directly is better value</small>";
-        myrDisp.innerText = "- RM " + Math.abs(diffMYR).toFixed(2);
-        sgdDisp.innerText = "- S$ " + Math.abs(diffSGD).toFixed(2);
+        vBox.innerHTML = "BUY FROM SELLER";
+        document.getElementById('myrDiff').innerText = "- RM " + Math.abs(diffMYR).toFixed(2);
+        document.getElementById('sgdDiff').innerText = "- S$ " + Math.abs(diffSGD).toFixed(2);
     }
 }
 
-fetchLiveRates();
+fetchRates();
 </script>
 
 </body>
